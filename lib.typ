@@ -25,13 +25,22 @@
 		],
 	)
 ] 
-#let exref(it) = context {
+#let exref(it, color: none) = context {
 	let locations = query(label(it))
 	if locations.len() > 0 {
 		let location = locations.last().location();
 		let excounter = counter("exling");
 		let value_counter = excounter.at(location);
-		numbering("(1a)", ..value_counter)
+		let colored(it) = if color == none {it} else {text(color, it)}
+		link(
+			location,
+			[(] +
+			colored(numbering(
+				"1a",
+				..value_counter
+			)) +
+			[)] 
+		)
 	}
 	else {
 		panic("No reference with name '" + it + "'")
