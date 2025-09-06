@@ -1,0 +1,7 @@
+[package]
+name = "lingex"
+version = "1.0.0"
+entrypoint = "lib.typ"
+authors = ["Keny C"]
+license = "MIT"
+description = "An package for linguistic examples."
