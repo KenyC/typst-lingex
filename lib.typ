@@ -12,19 +12,33 @@
 	)
 ]
 
-#let a(it) = [
-	#v(0.8em, weak: true)
-	#exlingcounter.step(level: 2)
-	#grid(
-		columns: (1em, auto),
-		context exlingcounter.display((.. nums) =>
-			numbering("a.", nums.pos().last())
-		),
-		block[
-			#it
-		],
-	)
-] 
+#let a(..its) = {
+	let args = its.pos()
+	let (label, content) = if args.len() == 1{
+			(none, args.at(0))
+		} 
+		else if args.len() == 2 and type(args.at(0)) == label{
+			args
+		}
+		else {
+			panic("Command #a only takes up to two arguments")
+		}
+
+	[
+		#v(0.8em, weak: true)
+		#exlingcounter.step(level: 2)
+		#grid(
+			columns: (1em, auto),
+			context exlingcounter.display((.. nums) =>
+				numbering("a.", nums.pos().last())
+			),
+			block[
+				#content
+			],
+		)
+		#label
+	]
+} 
 #let exref(it, color: none) = context {
 	let locations = query(label(it))
 	if locations.len() > 0 {
