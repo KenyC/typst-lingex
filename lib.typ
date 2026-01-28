@@ -1,16 +1,29 @@
 #let exlingcounter = counter("exling")
-#let ex(it, name: none) = block[
-	#exlingcounter.step(level: 1)
-	#if name != none {
-		label(name)
+#let ex(.. its) = {
+	let args = its.pos()
+	let name = if args.len() == 1 {
+		none
+	} else if args.len() == 2 and type(args.at(0)) == label {
+		args.at(0)
+	} else {
+		panic("Command #ex only takes up to two arguments")
 	}
-	#grid(
-		columns : (auto, auto),
-		gutter: 5pt,
-		[(#context exlingcounter.display())],
-		it
-	)
-]
+	let it = args.last();
+
+
+	block[
+		#exlingcounter.step(level: 1)
+		#if name != none {
+			name
+		}
+		#grid(
+			columns : (auto, auto),
+			gutter: 5pt,
+			[(#context exlingcounter.display())],
+			it
+		)
+	]
+}
 
 #let a(..its) = {
 	let args = its.pos()
@@ -40,7 +53,10 @@
 	]
 } 
 #let exref(it, color: none) = context {
-	let locations = query(label(it))
+	if type(it) != label {
+		panic("exref requires an argument of type label")
+	}
+	let locations = query(it)
 	if locations.len() > 0 {
 		let location = locations.last().location();
 		let excounter = counter("exling");
